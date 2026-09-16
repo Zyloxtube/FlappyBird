@@ -1,0 +1,17 @@
+name: FlappyBird
+options:
+  bundleIdPrefix: com.yourname
+  deploymentTarget:
+    iOS: "15.0"
+targets:
+  FlappyBird:
+    type: application
+    platform: iOS
+    sources: [AppDelegate.swift, GameScene.swift]
+    info:
+      path: Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.flappybird
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGNING_ALLOWED: NO
