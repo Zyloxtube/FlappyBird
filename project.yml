@@ -1,17 +1,36 @@
-name: FlappyBird
+name: FunTestGame
+
 options:
-  bundleIdPrefix: com.yourname
+  bundleIdPrefix: com.tjadev
   deploymentTarget:
     iOS: "15.0"
+
 targets:
-  FlappyBird:
+  FunTestGame:
     type: application
     platform: iOS
-    sources: [AppDelegate.swift, GameScene.swift]
+
+    sources:
+      - FunTestGame.swift
+
     info:
       path: Info.plist
+
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.flappybird
+        PRODUCT_BUNDLE_IDENTIFIER: com.tjadev.FunTestGame
+        PRODUCT_NAME: FunTestGame
+        SWIFT_VERSION: "5.0"
+        IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+        TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: NO
-        CODE_SIGNING_ALLOWED: NO
+
+        # Important for this fullscreen test:
+        INFOPLIST_KEY_UIRequiresFullScreen: YES
+
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: "-O"
