@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 class GameViewController: UIViewController {
 
     private var score = 0
+
     private var targetButton: UIButton!
     private var scoreLabel: UILabel!
     private var titleLabel: UILabel!
@@ -38,6 +39,8 @@ class GameViewController: UIViewController {
 
     private func setupUI() {
 
+        // MARK: - Title
+
         titleLabel = UILabel()
         titleLabel.text = "🔥 TAP ATTACK 🔥"
         titleLabel.textColor = .white
@@ -47,12 +50,13 @@ class GameViewController: UIViewController {
 
         view.addSubview(titleLabel)
 
+        // MARK: - Score
+
         scoreLabel = UILabel()
         scoreLabel.text = "Score: 0"
         scoreLabel.textColor = .systemYellow
         scoreLabel.textAlignment = .center
 
-        // FIXED:
         scoreLabel.font = UIFont.monospacedSystemFont(
             ofSize: 28,
             weight: .bold
@@ -62,12 +66,20 @@ class GameViewController: UIViewController {
 
         view.addSubview(scoreLabel)
 
+        // MARK: - Target Button
+
         targetButton = UIButton(type: .system)
+
         targetButton.setTitle("TAP ME!", for: .normal)
         targetButton.setTitleColor(.white, for: .normal)
-        targetButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
+
+        targetButton.titleLabel?.font = UIFont.boldSystemFont(
+            ofSize: 24
+        )
+
         targetButton.backgroundColor = .systemRed
         targetButton.layer.cornerRadius = 60
+
         targetButton.addTarget(
             self,
             action: #selector(targetTapped),
@@ -75,7 +87,10 @@ class GameViewController: UIViewController {
         )
 
         targetButton.translatesAutoresizingMaskIntoConstraints = false
+
         view.addSubview(targetButton)
+
+        // MARK: - Constraints
 
         NSLayoutConstraint.activate([
 
@@ -97,8 +112,13 @@ class GameViewController: UIViewController {
                 equalTo: view.centerXAnchor
             ),
 
-            targetButton.widthAnchor.constraint(equalToConstant: 120),
-            targetButton.heightAnchor.constraint(equalToConstant: 120),
+            targetButton.widthAnchor.constraint(
+                equalToConstant: 120
+            ),
+
+            targetButton.heightAnchor.constraint(
+                equalToConstant: 120
+            ),
 
             targetButton.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
@@ -110,9 +130,12 @@ class GameViewController: UIViewController {
         ])
     }
 
+    // MARK: - Target Tapped
+
     @objc private func targetTapped() {
 
         score += 1
+
         scoreLabel.text = "Score: \(score)"
 
         spawnTarget()
@@ -120,18 +143,26 @@ class GameViewController: UIViewController {
         UIView.animate(
             withDuration: 0.1,
             animations: {
-                self.targetButton.transform = CGAffineTransform(
-                    scaleX: 1.25,
-                    y: 1.25
-                )
+
+                self.targetButton.transform =
+                    CGAffineTransform(
+                        scaleX: 1.25,
+                        y: 1.25
+                    )
             },
             completion: { _ in
-                UIView.animate(withDuration: 0.1) {
+
+                UIView.animate(
+                    withDuration: 0.1
+                ) {
+
                     self.targetButton.transform = .identity
                 }
             }
         )
     }
+
+    // MARK: - Spawn Target
 
     private func spawnTarget() {
 
@@ -140,8 +171,13 @@ class GameViewController: UIViewController {
         let screenWidth = view.bounds.width
         let screenHeight = view.bounds.height
 
-        let safeTop = view.safeAreaInsets.top + 150
-        let safeBottom = screenHeight - view.safeAreaInsets.bottom - 100
+        let safeTop =
+            view.safeAreaInsets.top + 150
+
+        let safeBottom =
+            screenHeight -
+            view.safeAreaInsets.bottom -
+            100
 
         guard screenWidth > size,
               safeBottom > safeTop else {
@@ -149,13 +185,16 @@ class GameViewController: UIViewController {
         }
 
         let x = CGFloat.random(
-            in: size / 2...(screenWidth - size / 2)
+            in: (size / 2)...(screenWidth - size / 2)
         )
 
         let y = CGFloat.random(
-            in: safeTop...(safeBottom)
+            in: safeTop...safeBottom
         )
 
-        targetButton.center = CGPoint(x: x, y: y)
+        targetButton.center = CGPoint(
+            x: x,
+            y: y
+        )
     }
 }
