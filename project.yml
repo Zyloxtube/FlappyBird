@@ -30,8 +30,6 @@ targets:
 
         GENERATE_INFOPLIST_FILE: NO
 
-        INFOPLIST_KEY_UIRequiresFullScreen: YES
-
       configs:
 
         Debug:
