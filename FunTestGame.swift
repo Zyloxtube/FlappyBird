@@ -31,7 +31,8 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .black
+        // BRIGHT RED BACKGROUND
+        view.backgroundColor = .red
 
         setupUI()
         spawnTarget()
@@ -54,7 +55,7 @@ class GameViewController: UIViewController {
 
         scoreLabel = UILabel()
         scoreLabel.text = "Score: 0"
-        scoreLabel.textColor = .systemYellow
+        scoreLabel.textColor = .white
         scoreLabel.textAlignment = .center
 
         scoreLabel.font = UIFont.monospacedSystemFont(
@@ -77,7 +78,7 @@ class GameViewController: UIViewController {
             ofSize: 24
         )
 
-        targetButton.backgroundColor = .systemRed
+        targetButton.backgroundColor = .systemBlue
         targetButton.layer.cornerRadius = 60
 
         targetButton.addTarget(
@@ -130,12 +131,9 @@ class GameViewController: UIViewController {
         ])
     }
 
-    // MARK: - Target Tapped
-
     @objc private func targetTapped() {
 
         score += 1
-
         scoreLabel.text = "Score: \(score)"
 
         spawnTarget()
@@ -161,8 +159,6 @@ class GameViewController: UIViewController {
             }
         )
     }
-
-    // MARK: - Spawn Target
 
     private func spawnTarget() {
 
