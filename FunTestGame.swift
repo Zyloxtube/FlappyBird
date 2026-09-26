@@ -1,117 +1,95 @@
 import UIKit
 
 @main
-final class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
     func application(
         _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions:
-        [UIApplication.LaunchOptionsKey: Any]? = nil
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-
         window.rootViewController = GameViewController()
+        window.makeKeyAndVisible()
 
         self.window = window
 
-        window.makeKeyAndVisible()
-
         return true
-    }
-
-    func application(
-        _ application: UIApplication,
-        supportedInterfaceOrientationsFor window: UIWindow?
-    ) -> UIInterfaceOrientationMask {
-        return .all
     }
 }
 
-
-// MARK: - Game
-
-final class GameViewController: UIViewController {
-
-    private let scoreLabel = UILabel()
-    private let targetButton = UIButton(type: .system)
-    private let messageLabel = UILabel()
+class GameViewController: UIViewController {
 
     private var score = 0
-    private var targetSize: CGFloat = 90
-
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
+    private var targetButton: UIButton!
+    private var scoreLabel: UILabel!
+    private var titleLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .black
 
-        setupGame()
+        setupUI()
+        spawnTarget()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    private func setupUI() {
 
-        moveTarget()
-    }
+        titleLabel = UILabel()
+        titleLabel.text = "🔥 TAP ATTACK 🔥"
+        titleLabel.textColor = .white
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-    private func setupGame() {
+        view.addSubview(titleLabel)
 
-        // Score
-        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
-        scoreLabel.text = "SCORE: 0"
-        scoreLabel.textColor = .white
-        scoreLabel.font = UIFont.monospacedBoldSystemFont(
-            ofSize: 28
-        )
+        scoreLabel = UILabel()
+        scoreLabel.text = "Score: 0"
+        scoreLabel.textColor = .systemYellow
         scoreLabel.textAlignment = .center
+
+        // FIXED:
+        scoreLabel.font = UIFont.monospacedSystemFont(
+            ofSize: 28,
+            weight: .bold
+        )
+
+        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(scoreLabel)
 
-        // Message
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        messageLabel.text = "TAP THE RED TARGET!"
-        messageLabel.textColor = .white
-        messageLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        messageLabel.textAlignment = .center
-
-        view.addSubview(messageLabel)
-
-        // Target
-        targetButton.translatesAutoresizingMaskIntoConstraints = true
-
-        targetButton.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: targetSize,
-            height: targetSize
-        )
-
+        targetButton = UIButton(type: .system)
+        targetButton.setTitle("TAP ME!", for: .normal)
+        targetButton.setTitleColor(.white, for: .normal)
+        targetButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
         targetButton.backgroundColor = .systemRed
-        targetButton.layer.cornerRadius = targetSize / 2
-        targetButton.layer.borderWidth = 5
-        targetButton.layer.borderColor = UIColor.white.cgColor
-
-        targetButton.setTitle("💥", for: .normal)
-        targetButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
-
+        targetButton.layer.cornerRadius = 60
         targetButton.addTarget(
             self,
             action: #selector(targetTapped),
             for: .touchUpInside
         )
 
+        targetButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(targetButton)
 
         NSLayoutConstraint.activate([
 
-            scoreLabel.topAnchor.constraint(
+            titleLabel.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 30
+            ),
+
+            titleLabel.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+
+            scoreLabel.topAnchor.constraint(
+                equalTo: titleLabel.bottomAnchor,
                 constant: 20
             ),
 
@@ -119,104 +97,65 @@ final class GameViewController: UIViewController {
                 equalTo: view.centerXAnchor
             ),
 
-            messageLabel.topAnchor.constraint(
-                equalTo: scoreLabel.bottomAnchor,
-                constant: 10
+            targetButton.widthAnchor.constraint(equalToConstant: 120),
+            targetButton.heightAnchor.constraint(equalToConstant: 120),
+
+            targetButton.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
             ),
 
-            messageLabel.centerXAnchor.constraint(
-                equalTo: view.centerXAnchor
+            targetButton.centerYAnchor.constraint(
+                equalTo: view.centerYAnchor
             )
         ])
     }
 
-    @objc
-    private func targetTapped() {
+    @objc private func targetTapped() {
 
         score += 1
+        scoreLabel.text = "Score: \(score)"
 
-        scoreLabel.text = "SCORE: \(score)"
-
-        // Make it progressively smaller.
-        targetSize = max(
-            45,
-            90 - CGFloat(score) * 2
-        )
-
-        targetButton.bounds = CGRect(
-            x: 0,
-            y: 0,
-            width: targetSize,
-            height: targetSize
-        )
-
-        targetButton.layer.cornerRadius = targetSize / 2
+        spawnTarget()
 
         UIView.animate(
-            withDuration: 0.12,
+            withDuration: 0.1,
             animations: {
-                self.targetButton.transform =
-                    CGAffineTransform(scaleX: 1.4, y: 1.4)
+                self.targetButton.transform = CGAffineTransform(
+                    scaleX: 1.25,
+                    y: 1.25
+                )
             },
             completion: { _ in
-
-                UIView.animate(
-                    withDuration: 0.12
-                ) {
+                UIView.animate(withDuration: 0.1) {
                     self.targetButton.transform = .identity
                 }
             }
         )
-
-        moveTarget()
     }
 
-    private func moveTarget() {
+    private func spawnTarget() {
 
-        let safeFrame = view.bounds.insetBy(
-            dx: 20,
-            dy: 20
-        )
+        let size: CGFloat = 120
 
-        let topReserved: CGFloat = 150
+        let screenWidth = view.bounds.width
+        let screenHeight = view.bounds.height
 
-        let minX = safeFrame.minX
-        let maxX = safeFrame.maxX - targetSize
+        let safeTop = view.safeAreaInsets.top + 150
+        let safeBottom = screenHeight - view.safeAreaInsets.bottom - 100
 
-        let minY = safeFrame.minY + topReserved
-        let maxY = safeFrame.maxY - targetSize
-
-        guard maxX >= minX, maxY >= minY else {
+        guard screenWidth > size,
+              safeBottom > safeTop else {
             return
         }
 
         let x = CGFloat.random(
-            in: minX...maxX
+            in: size / 2...(screenWidth - size / 2)
         )
 
         let y = CGFloat.random(
-            in: minY...maxY
+            in: safeTop...(safeBottom)
         )
 
-        UIView.animate(
-            withDuration: 0.2,
-            animations: {
-
-                self.targetButton.frame = CGRect(
-                    x: x,
-                    y: y,
-                    width: self.targetSize,
-                    height: self.targetSize
-                )
-            }
-        )
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if targetButton.frame == .zero {
-            moveTarget()
-        }
+        targetButton.center = CGPoint(x: x, y: y)
     }
 }
