@@ -2,12 +2,14 @@ name: Build iOS Test Game
 
 on:
   workflow_dispatch:
+
   push:
     branches:
       - main
 
 jobs:
   build:
+
     runs-on: macos-15
 
     steps:
